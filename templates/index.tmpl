@@ -1,0 +1,15 @@
+{{ template "top" . }}
+
+<h1>
+    Weather
+</h1>
+{{range .data}}
+    <h2>{{.Year}}</h2>
+    <div>{{.Min}}</div>
+    <div>{{.Max}}</div>
+{{end}}
+<code>
+    {{ .data }}
+</code>
+
+{{ template "bottom" . }}
