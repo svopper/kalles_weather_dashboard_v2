@@ -52,6 +52,11 @@ type WeatherResponseData struct {
 	Max  float64 `json:"max"`
 }
 
+type IndexViewModel struct {
+	Date        string
+	WeatherData []WeatherResponseData
+}
+
 func UnmarshalWelcome(data []byte) (WeatherObservation, error) {
 	var r WeatherObservation
 	err := json.Unmarshal(data, &r)
@@ -115,7 +120,10 @@ func main() {
 
 	router.GET("/", func(c *gin.Context) {
 
-		weatherObs := []WeatherResponseData{}
+		viewModel := IndexViewModel{
+			Date:        time.Now().Format("January 02"),
+			WeatherData: []WeatherResponseData{},
+		}
 		for i := 1; i <= 10; i++ {
 			year := time.Now().Year() - i
 			month := time.Now().Month()
@@ -123,11 +131,11 @@ func main() {
 			w := getWatherObservations(time.Date(year, month, day, 0, 0, 0, 0, time.Now().Location()), time.Date(year, month, day, 23, 59, 0, 0, time.Now().Location()))
 			min, max := getMinAndMax(w.Features)
 			obs := WeatherResponseData{Year: year, Min: min, Max: max}
-			weatherObs = append(weatherObs, obs)
+			viewModel.WeatherData = append(viewModel.WeatherData, obs)
 		}
 
 		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"data": weatherObs,
+			"data": viewModel,
 		})
 	})
 	router.Run(":8080")

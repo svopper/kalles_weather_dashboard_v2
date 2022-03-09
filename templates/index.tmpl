@@ -3,13 +3,15 @@
 <h1>
     Weather
 </h1>
-{{range .data}}
-    <h2>{{.Year}}</h2>
-    <div>{{.Min}}</div>
-    <div>{{.Max}}</div>
+<h2>
+    {{ .data.Date }}
+</h2>
+
+
+{{range .data.WeatherData}}
+    <h3>{{.Year}}</h3>
+    <div>Min: {{.Min}}</div>
+    <div>Max: {{.Max}}</div>
 {{end}}
-<code>
-    {{ .data }}
-</code>
 
 {{ template "bottom" . }}
