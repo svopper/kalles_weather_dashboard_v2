@@ -119,7 +119,6 @@ func main() {
 	router.Static("/assets", "./assets")
 
 	router.GET("/", func(c *gin.Context) {
-
 		viewModel := IndexViewModel{
 			Date:        time.Now().Format("January 02"),
 			WeatherData: []WeatherResponseData{},
@@ -139,5 +138,4 @@ func main() {
 		})
 	})
 	router.Run(":8080")
-
 }
