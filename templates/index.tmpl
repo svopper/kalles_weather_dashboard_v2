@@ -6,8 +6,9 @@
 <h2>
     {{ .data.Date }}
 </h2>
-
-{{range .data.WeatherData}}
+<div>{{ .data.MinAverage }}</div>
+<div>{{ .data.MaxAverage }}</div>
+{{range .data.TemperatureObservations}}
     <h3>{{.Year}}</h3>
     <div>Max: {{.Max}}</div>
     <div>Min: {{.Min}}</div>

@@ -47,15 +47,17 @@ type Link struct {
 	Title string `json:"title"`
 }
 
-type WeatherResponseData struct {
+type TemperatureObservation struct {
 	Year int     `json:"year"`
 	Min  float64 `json:"min"`
 	Max  float64 `json:"max"`
 }
 
 type IndexViewModel struct {
-	Date        string
-	WeatherData []WeatherResponseData
+	Date                    string
+	TemperatureObservations []TemperatureObservation
+	MaxAverage              float64
+	MinAverage              float64
 }
 
 func UnmarshalWeatherObservation(data []byte) (WeatherObservation, error) {
@@ -134,10 +136,31 @@ func getMinAndMax(features []Feature) (float64, float64) {
 	return min, max
 }
 
+func roundToFixedDecimal(num float64, precision int) float64 {
+	output := math.Pow(10, float64(precision))
+	return float64(round(num*output)) / output
+}
+
+func getAverageMaxTemp(observations []TemperatureObservation) float64 {
+	var sum float64
+	for _, observation := range observations {
+		sum += observation.Max
+	}
+	return sum / float64(len(observations))
+}
+
+func getAverageMinTemp(observations []TemperatureObservation) float64 {
+	var sum float64
+	for _, observation := range observations {
+		sum += observation.Min
+	}
+	return sum / float64(len(observations))
+}
+
 func getIndex(c *gin.Context) {
 	viewModel := IndexViewModel{
-		Date:        time.Now().Format("January 02"),
-		WeatherData: []WeatherResponseData{},
+		Date:                    time.Now().Format("January 02"),
+		TemperatureObservations: []TemperatureObservation{},
 	}
 	for i := 1; i <= 10; i++ {
 		year := time.Now().Year() - i
@@ -147,9 +170,11 @@ func getIndex(c *gin.Context) {
 		toDate := time.Date(year, month, day, 23, 59, 0, 0, time.Now().Location())
 		w := getWatherObservations(fromDate, toDate)
 		min, max := getMinAndMax(w.Features)
-		obs := WeatherResponseData{Year: year, Min: min, Max: max}
-		viewModel.WeatherData = append(viewModel.WeatherData, obs)
+		obs := TemperatureObservation{Year: year, Min: min, Max: max}
+		viewModel.TemperatureObservations = append(viewModel.TemperatureObservations, obs)
 	}
+	viewModel.MaxAverage = getAverageMaxTemp(viewModel.TemperatureObservations)
+	viewModel.MinAverage = getAverageMinTemp(viewModel.TemperatureObservations)
 
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
 		"data": viewModel,
