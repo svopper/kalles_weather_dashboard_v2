@@ -9,8 +9,8 @@
 
 {{range .data.WeatherData}}
     <h3>{{.Year}}</h3>
-    <div>Min: {{.Min}}</div>
     <div>Max: {{.Max}}</div>
+    <div>Min: {{.Min}}</div>
 {{end}}
 
 {{ template "bottom" . }}
