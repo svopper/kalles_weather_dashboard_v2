@@ -1,11 +1,55 @@
+@font-face {
+    font-family: Andel;
+    src: url("fonts/Andel-Regular.woff2");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Andel;
+    src: url("fonts/Andel-Italic.woff2");
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: Andel;
+    src: url("fonts/Andel-Light.woff2");
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Andel;
+    src: url("fonts/Andel-Bold.woff2");
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Andel;
+    src: url("fonts/Andel-Demibold.woff2");
+    font-weight: 700;
+    font-style: normal;
+}
+
 body {
-    background-color: #2D2D2D;
-    color: #BFC5CE;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    background-color: var(--color-white);
+    font-family: Andel, sans-serif;
 }
 
 .content {
     margin: 0 auto;
     width: 100%;
     max-width: 800px;
+}
+
+
+
+:root {
+    --color-primary: rgb(60, 110, 227);
+    --color-secondary: rgb(195, 212, 244);
+    --color-tertiary: rgb(227, 234, 249);
+    --color-white: rgb(249, 249, 249);
+    --color-gray: rgb(240, 240, 240);
 }

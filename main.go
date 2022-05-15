@@ -136,9 +136,9 @@ func getMinAndMax(features []Feature) (float64, float64) {
 	return min, max
 }
 
-func roundToFixedDecimal(num float64, precision int) float64 {
-	output := math.Pow(10, float64(precision))
-	return float64(round(num*output)) / output
+func roundToTwoDecimal(num float64) float64 {
+	rounded := math.Round(num*10) / 10
+	return rounded
 }
 
 func getAverageMaxTemp(observations []TemperatureObservation) float64 {
@@ -146,7 +146,7 @@ func getAverageMaxTemp(observations []TemperatureObservation) float64 {
 	for _, observation := range observations {
 		sum += observation.Max
 	}
-	return sum / float64(len(observations))
+	return roundToTwoDecimal(sum / float64(len(observations)))
 }
 
 func getAverageMinTemp(observations []TemperatureObservation) float64 {
@@ -154,7 +154,7 @@ func getAverageMinTemp(observations []TemperatureObservation) float64 {
 	for _, observation := range observations {
 		sum += observation.Min
 	}
-	return sum / float64(len(observations))
+	return roundToTwoDecimal(sum / float64(len(observations)))
 }
 
 func getIndex(c *gin.Context) {
