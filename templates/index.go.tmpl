@@ -1,0 +1,39 @@
+{{ template "top" . }}
+
+<header class="temp-header">
+    <h1>
+        Weather
+    </h1>
+    <h2>
+        {{ .data.Date }}
+    </h2>
+    <h3>Average</h3>
+    <div>Max: {{ .data.MaxAverage }}</div>
+    <div>Min: {{ .data.MinAverage }}</div>
+</header>
+{{range .data.TemperatureObservations}}
+<div class="list-card">
+    <div class="list-card-content">
+        <h3 class="bold year">{{.Year}}</h3>
+        <div class="temp-info">
+            <span class="temperature"><i class="warm fa-solid fa-arrow-up"></i>
+                {{if (call $.data.IsNA .Max)}}
+                <span class="temp-max">N/A</span>
+                {{else}}
+                {{.Max}}
+                {{end}}
+            </span>
+            <span class="temperature"><i class="cold fa-solid fa-arrow-down"></i>
+                {{if (call $.data.IsNA .Min)}}
+                <span class="temp-max">N/A</span>
+                {{else}}
+                {{.Min}}
+                {{end}}
+            </span>
+        </div>
+    </div>
+    <hr>
+</div>
+{{end}}
+
+{{ template "bottom" . }}

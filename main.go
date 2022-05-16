@@ -58,6 +58,7 @@ type IndexViewModel struct {
 	TemperatureObservations []TemperatureObservation
 	MaxAverage              float64
 	MinAverage              float64
+	IsNA                    func(float64) bool
 }
 
 func UnmarshalWeatherObservation(data []byte) (WeatherObservation, error) {
@@ -143,18 +144,41 @@ func roundToTwoDecimal(num float64) float64 {
 
 func getAverageMaxTemp(observations []TemperatureObservation) float64 {
 	var sum float64
+	iterations := 0
 	for _, observation := range observations {
+		if observation.Max == math.Inf(1) {
+			continue
+		}
 		sum += observation.Max
+		iterations++
 	}
-	return roundToTwoDecimal(sum / float64(len(observations)))
+	return roundToTwoDecimal(sum / float64(iterations))
 }
 
 func getAverageMinTemp(observations []TemperatureObservation) float64 {
 	var sum float64
+	iterations := 0
 	for _, observation := range observations {
+		if observation.Min == math.Inf(-1) {
+			continue
+		}
 		sum += observation.Min
+		iterations++
+
 	}
-	return roundToTwoDecimal(sum / float64(len(observations)))
+	return roundToTwoDecimal(sum / float64(iterations))
+}
+
+func isLeapYear(year int) bool {
+	return year%4 == 0 && (year%100 != 0 || year%400 == 0)
+}
+
+func isFeb29(year int, month time.Month, day int) bool {
+	return isLeapYear(year) && month == time.February && day == 29
+}
+
+func isNA(number float64) bool {
+	return math.IsInf(number, 0)
 }
 
 func getIndex(c *gin.Context) {
@@ -166,6 +190,10 @@ func getIndex(c *gin.Context) {
 		year := time.Now().Year() - i
 		month := time.Now().Month()
 		day := time.Now().Day()
+		if !isLeapYear(year) && month == time.February && day == 29 {
+			viewModel.TemperatureObservations = append(viewModel.TemperatureObservations, TemperatureObservation{Year: year, Min: math.Inf(-1), Max: math.Inf(1)})
+			continue
+		}
 		fromDate := time.Date(year, month, day, 0, 0, 0, 0, time.Now().Location())
 		toDate := time.Date(year, month, day, 23, 59, 0, 0, time.Now().Location())
 		w := getWatherObservations(fromDate, toDate)
@@ -175,8 +203,9 @@ func getIndex(c *gin.Context) {
 	}
 	viewModel.MaxAverage = getAverageMaxTemp(viewModel.TemperatureObservations)
 	viewModel.MinAverage = getAverageMinTemp(viewModel.TemperatureObservations)
+	viewModel.IsNA = isNA
 
-	c.HTML(http.StatusOK, "index.tmpl", gin.H{
+	c.HTML(http.StatusOK, "index.go.tmpl", gin.H{
 		"data": viewModel,
 	})
 }
