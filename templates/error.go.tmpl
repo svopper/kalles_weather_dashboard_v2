@@ -1,0 +1,14 @@
+{{ template "top" . }}
+
+<header class="error-header">
+    <h1>
+        Error occurred!
+    </h1>
+    <p>A fatal error occurred. See error message below.</p>
+</header>
+
+<code>
+    {{ .error }}
+</code>
+
+{{ template "bottom" . }}

@@ -3,10 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"math"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -98,7 +100,11 @@ func buildRequest(uri string) *http.Request {
 func doRequest(request *http.Request) *http.Response {
 	client := &http.Client{}
 	resp, err := client.Do(request)
-
+	if resp.StatusCode < 200 || resp.StatusCode > 299 {
+		buf := new(strings.Builder)
+		io.Copy(buf, resp.Body)
+		panic(fmt.Sprintf("Request failed with status code %d. Error: %s", resp.StatusCode, buf.String()))
+	}
 	if err != nil {
 		panic(err)
 	}
@@ -211,7 +217,17 @@ func getIndex(c *gin.Context) {
 }
 
 func main() {
-	router := gin.Default()
+	router := gin.New()
+	router.Use(gin.Logger())
+	router.Use(gin.CustomRecovery(func(c *gin.Context, recovered interface{}) {
+		if err, ok := recovered.(string); ok {
+			c.HTML(http.StatusInternalServerError, "error.go.tmpl", gin.H{
+				"error": err,
+			})
+		}
+		c.AbortWithStatus(http.StatusInternalServerError)
+	}))
+
 	router.LoadHTMLGlob("templates/*")
 	router.Static("/assets", "./assets")
 

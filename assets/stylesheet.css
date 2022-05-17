@@ -46,9 +46,17 @@ hr {
 }
 
 header {
+    padding: var(--padding-primary);
+}
+
+.temp-header {
     background-color: var(--color-primary-dark);
     color: var(--color-white);
-    padding: var(--padding-primary);
+}
+
+.error-header {
+    background-color: var(--color-warm);
+    color: var(--color-white);
 }
 
 .content {
@@ -86,8 +94,6 @@ header {
 .year {
     font-size: 1.5rem;
 }
-
-
 
 :root {
     --color-primary: #3c6ee3;
