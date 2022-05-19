@@ -1,19 +1,26 @@
 {{ template "top" . }}
 
 <header class="temp-header">
-    <h1>
-        Weather
-    </h1>
-    <h2>
-        {{ .data.Date }}
-    </h2>
-    <h3>Average</h3>
-    <div>Max: {{ .data.MaxAverage }}</div>
-    <div>Min: {{ .data.MinAverage }}</div>
+    <div class="title">
+        <h1>Weather</h1>
+        <h2 class="date">{{ .data.Date }}</h2>
+    </div>
+    
+    <div class="list-card-content">
+        <h3 class="bold year">Average</h3>
+        <div class="temp-info">
+            <span class="temperature"><i class="warm fa-brands fa-hotjar"></i>
+                <span class="temp-max">{{ .data.MaxAverage }}</span>
+            </span>
+            <span class="temperature"><i class="cold fa-regular fa-snowflake"></i>
+                <span class="temp-max">{{ .data.MinAverage }}</span>
+            </span>
+        </div>
+    </div>
 </header>
 {{range .data.TemperatureObservations}}
 <div class="list-card">
-    <div class="list-card-content">
+    <div class="list-card-content primary-padding">
         <h3 class="bold year">{{.Year}}</h3>
         <div class="temp-info">
             <span class="temperature"><i class="warm fa-brands fa-hotjar"></i>

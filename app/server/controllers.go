@@ -230,7 +230,7 @@ func InstantiateControllers() *gin.Engine {
 	}))
 
 	router.LoadHTMLGlob("app/server/templates/*")
-	router.Static("/assets", "./assets")
+	router.Static("/assets", "app/server/assets")
 
 	router.GET("/", getIndex)
 

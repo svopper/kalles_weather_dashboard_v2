@@ -64,13 +64,16 @@ header {
     width: 100%;
 }
 
-.list-card-content {
-    padding: var(--padding-primary);
-}
 
 .temp-info {
     display: flex;
     justify-content: space-around;
+    align-items: center;
+}
+
+.title {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
 }
 
@@ -84,6 +87,14 @@ header {
 
 .cold {
     color: var(--color-primary);
+}
+
+.date {
+    font-style: italic;
+}
+
+.primary-padding {
+    padding: var(--padding-primary);
 }
 
 .temperature {
