@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"encoding/json"
@@ -14,19 +14,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type WeatherObservation struct {
+type weatherObservation struct {
 	Type           string    `json:"type"`
-	Features       []Feature `json:"features"`
+	Features       []feature `json:"features"`
 	TimeStamp      string    `json:"timeStamp"`
 	NumberReturned int64     `json:"numberReturned"`
-	Links          []Link    `json:"links"`
+	Links          []link    `json:"links"`
 }
 
-type Feature struct {
+type feature struct {
 	Geometry   Geometry   `json:"geometry"`
 	ID         string     `json:"id"`
 	Type       string     `json:"type"`
-	Properties Properties `json:"properties"`
+	Properties properties `json:"properties"`
 }
 
 type Geometry struct {
@@ -34,7 +34,7 @@ type Geometry struct {
 	Type        string    `json:"type"`
 }
 
-type Properties struct {
+type properties struct {
 	Created     string  `json:"created"`
 	Observed    string  `json:"observed"`
 	ParameterID string  `json:"parameterId"`
@@ -42,29 +42,29 @@ type Properties struct {
 	Value       float64 `json:"value"`
 }
 
-type Link struct {
+type link struct {
 	Href  string `json:"href"`
 	Rel   string `json:"rel"`
 	Type  string `json:"type"`
 	Title string `json:"title"`
 }
 
-type TemperatureObservation struct {
+type temperatureObservation struct {
 	Year int     `json:"year"`
 	Min  float64 `json:"min"`
 	Max  float64 `json:"max"`
 }
 
-type IndexViewModel struct {
+type indexViewModel struct {
 	Date                    string
-	TemperatureObservations []TemperatureObservation
+	TemperatureObservations []temperatureObservation
 	MaxAverage              float64
 	MinAverage              float64
 	IsNA                    func(float64) bool
 }
 
-func UnmarshalWeatherObservation(data []byte) (WeatherObservation, error) {
-	var r WeatherObservation
+func unmarshalWeatherObservation(data []byte) (weatherObservation, error) {
+	var r weatherObservation
 	err := json.Unmarshal(data, &r)
 	return r, err
 }
@@ -112,7 +112,7 @@ func doRequest(request *http.Request) *http.Response {
 	return resp
 }
 
-func getWatherObservations(from, to time.Time) WeatherObservation {
+func getWatherObservations(from, to time.Time) weatherObservation {
 	uri := generateUri(from, to)
 	request := buildRequest(uri)
 	response := doRequest(request)
@@ -121,7 +121,7 @@ func getWatherObservations(from, to time.Time) WeatherObservation {
 		panic(err)
 	}
 
-	weatherObs, err := UnmarshalWeatherObservation(body)
+	weatherObs, err := unmarshalWeatherObservation(body)
 
 	if err != nil {
 		panic(err)
@@ -129,7 +129,7 @@ func getWatherObservations(from, to time.Time) WeatherObservation {
 	return weatherObs
 }
 
-func getMinAndMax(features []Feature) (float64, float64) {
+func getMinAndMax(features []feature) (float64, float64) {
 	min := math.Inf(1)
 	max := math.Inf(-1)
 	for _, feature := range features {
@@ -148,7 +148,7 @@ func roundToTwoDecimal(num float64) float64 {
 	return rounded
 }
 
-func getAverageMaxTemp(observations []TemperatureObservation) float64 {
+func getAverageMaxTemp(observations []temperatureObservation) float64 {
 	var sum float64
 	iterations := 0
 	for _, observation := range observations {
@@ -161,7 +161,7 @@ func getAverageMaxTemp(observations []TemperatureObservation) float64 {
 	return roundToTwoDecimal(sum / float64(iterations))
 }
 
-func getAverageMinTemp(observations []TemperatureObservation) float64 {
+func getAverageMinTemp(observations []temperatureObservation) float64 {
 	var sum float64
 	iterations := 0
 	for _, observation := range observations {
@@ -188,23 +188,23 @@ func isNA(number float64) bool {
 }
 
 func getIndex(c *gin.Context) {
-	viewModel := IndexViewModel{
+	viewModel := indexViewModel{
 		Date:                    time.Now().Format("January 02"),
-		TemperatureObservations: []TemperatureObservation{},
+		TemperatureObservations: []temperatureObservation{},
 	}
 	for i := 1; i <= 10; i++ {
 		year := time.Now().Year() - i
 		month := time.Now().Month()
 		day := time.Now().Day()
 		if !isLeapYear(year) && month == time.February && day == 29 {
-			viewModel.TemperatureObservations = append(viewModel.TemperatureObservations, TemperatureObservation{Year: year, Min: math.Inf(-1), Max: math.Inf(1)})
+			viewModel.TemperatureObservations = append(viewModel.TemperatureObservations, temperatureObservation{Year: year, Min: math.Inf(-1), Max: math.Inf(1)})
 			continue
 		}
 		fromDate := time.Date(year, month, day, 0, 0, 0, 0, time.Now().Location())
 		toDate := time.Date(year, month, day, 23, 59, 0, 0, time.Now().Location())
 		w := getWatherObservations(fromDate, toDate)
 		min, max := getMinAndMax(w.Features)
-		obs := TemperatureObservation{Year: year, Min: min, Max: max}
+		obs := temperatureObservation{Year: year, Min: min, Max: max}
 		viewModel.TemperatureObservations = append(viewModel.TemperatureObservations, obs)
 	}
 	viewModel.MaxAverage = getAverageMaxTemp(viewModel.TemperatureObservations)
@@ -216,7 +216,8 @@ func getIndex(c *gin.Context) {
 	})
 }
 
-func main() {
+func InstantiateControllers() *gin.Engine {
+
 	router := gin.New()
 	router.Use(gin.Logger())
 	router.Use(gin.CustomRecovery(func(c *gin.Context, recovered interface{}) {
@@ -228,9 +229,10 @@ func main() {
 		c.AbortWithStatus(http.StatusInternalServerError)
 	}))
 
-	router.LoadHTMLGlob("templates/*")
+	router.LoadHTMLGlob("app/server/templates/*")
 	router.Static("/assets", "./assets")
 
 	router.GET("/", getIndex)
-	router.Run(":8080")
+
+	return router
 }
