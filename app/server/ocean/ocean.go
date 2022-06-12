@@ -3,6 +3,7 @@ package ocean
 import (
 	"fmt"
 	"io/ioutil"
+	"math"
 	"net/http"
 	"time"
 
@@ -37,17 +38,31 @@ func getOceanObservations(stationId int) models.DMIObservation {
 	return weatherObs
 }
 
+func getMax(features []models.Feature) float64 {
+	max := math.Inf(-1)
+	for _, feature := range features {
+		if feature.Properties.Value > max {
+			max = feature.Properties.Value
+		}
+	}
+	return max
+}
+
 func GetOcean(c *gin.Context) {
 	viewModel := oceanViewModel{
-		Date: time.Now().Add(-24 * time.Hour).Format("January 02"),
+		Date: time.Now().Add(-24 * time.Hour).Format("January 02"), // get observation for yesterday
 	}
 
-	stationIDs := []int{util.COPENHAGEN_ID, util.HORNBAEK_ID}
-
-	for _, stationId := range stationIDs {
+	for stationId, stationName := range util.OCEAN_STATION_MAP {
 		obs := getOceanObservations(stationId)
 		fmt.Println(obs)
 
+		observation := observation{
+			stationId:   stationId,
+			stationName: stationName,
+			temperature: getMax(obs.Features),
+		}
+		viewModel.Observations = append(viewModel.Observations, observation)
 	}
 
 	c.HTML(http.StatusOK, "ocean.go.tmpl", gin.H{

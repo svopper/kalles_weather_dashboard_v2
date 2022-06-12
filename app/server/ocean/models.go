@@ -6,7 +6,7 @@ type oceanViewModel struct {
 }
 
 type observation struct {
-	stationId   string
+	stationId   int
 	stationName string
-	temperature float32
+	temperature float64
 }
