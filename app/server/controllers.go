@@ -63,6 +63,10 @@ type indexViewModel struct {
 	IsNA                    func(float64) bool
 }
 
+type oceanViewModel struct {
+	Date string
+}
+
 func unmarshalWeatherObservation(data []byte) (weatherObservation, error) {
 	var r weatherObservation
 	err := json.Unmarshal(data, &r)
@@ -81,11 +85,19 @@ func formatDate(date time.Time) string {
 	return date.Format("2006-01-02T15:04:05Z")
 }
 
-func generateUri(fromDate, toDate time.Time) string {
+func generateTemperatureUri(fromDate, toDate time.Time) string {
 	uri := fmt.Sprintf(
 		"https://dmigw.govcloud.dk/v2/metObs/collections/observation/items?datetime=%s/%s&stationId=06186&parameterId=temp_dry&bbox-crs=https://www.opengis.net/def/crs/OGC/1.3/CRS84&api-key=%s",
 		formatDate(fromDate),
 		formatDate(toDate),
+		getEnvVariable("DMI_API_KEY"),
+	)
+	return uri
+}
+
+func generateOceanUri(fromDate, toDate time.Time) string {
+	uri := fmt.Sprintf(
+		"https://dmigw.govcloud.dk/v2/oceanObs/collections/observation/items?period=latest-day&stationId=30015&parameterId=tw&sortorder=observed,DESC&bbox-crs=https://www.opengis.net/def/crs/OGC/1.3/CRS84&api-key=%s",
 		getEnvVariable("DMI_API_KEY"),
 	)
 	return uri
@@ -113,7 +125,7 @@ func doRequest(request *http.Request) *http.Response {
 }
 
 func getWatherObservations(from, to time.Time) weatherObservation {
-	uri := generateUri(from, to)
+	uri := generateTemperatureUri(from, to)
 	request := buildRequest(uri)
 	response := doRequest(request)
 	body, err := ioutil.ReadAll(response.Body)
@@ -216,6 +228,16 @@ func getIndex(c *gin.Context) {
 	})
 }
 
+func getOcean(c *gin.Context) {
+	viewModel := oceanViewModel{
+		Date: time.Now().Add(-24 * time.Hour).Format("January 02"),
+	}
+
+	c.HTML(http.StatusOK, "ocean.go.tmpl", gin.H{
+		"data": viewModel,
+	})
+}
+
 func InstantiateControllers() *gin.Engine {
 
 	router := gin.New()
@@ -232,6 +254,7 @@ func InstantiateControllers() *gin.Engine {
 	router.LoadHTMLGlob("app/server/templates/*")
 	router.Static("/assets", "app/server/assets")
 
+	router.GET("/ocean", getOcean)
 	router.GET("/", getIndex)
 
 	return router
