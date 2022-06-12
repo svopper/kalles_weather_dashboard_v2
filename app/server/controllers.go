@@ -148,6 +148,11 @@ func roundToTwoDecimal(num float64) float64 {
 	return rounded
 }
 
+func convertDbzToMillimetres(dbz float64) float64 {
+	// https://en.wikipedia.org/wiki/DBZ_(meteorology)
+	return math.Pow((math.Pow(10, dbz/10) / 200), 0.625)
+}
+
 func getAverageMaxTemp(observations []temperatureObservation) float64 {
 	var sum float64
 	iterations := 0
