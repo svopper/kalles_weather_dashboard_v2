@@ -50,7 +50,7 @@ func getMax(features []models.Feature) float64 {
 
 func GetOcean(c *gin.Context) {
 	viewModel := oceanViewModel{
-		Date: time.Now().Add(-24 * time.Hour).Format("January 02"), // get observation for yesterday
+		Date: time.Now().Format("January 02"), // get observation for yesterday
 		IsNA: func(f float64) bool { return math.IsInf(f, 0) },
 	}
 
