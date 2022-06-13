@@ -11,6 +11,21 @@
     <title>Kalle's Weather Dashboard</title>
 </head>
 <body>
+<nav class="navbar">
+    <!-- LOGO -->
+    <div class="logo">MUO</div>
+    <!-- NAVIGATION MENU -->
+    <ul class="nav-links">
+    <!-- USING CHECKBOX HACK -->
+    <input type="checkbox" id="checkbox_toggle" />
+    <label for="checkbox_toggle" class="hamburger">&#9776;</label>
+    <!-- NAVIGATION MENUS -->
+    <div class="menu">
+        <li><a href="/">Temperature History</a></li>
+        <li><a href="/ocean">Ocean Temperature</a></li>
+    </div>
+    </ul>
+</nav>
 <div class="content">
 {{ end }}
 
