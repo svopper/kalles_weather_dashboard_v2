@@ -7,9 +7,23 @@
     </div>
 </header>
 
-<code>
-{{ .data }}
-</code>
+{{range .data.Observations}}
+<div class="list-card">
+    <div class="list-card-content primary-padding">
+        <h3 class="bold year">{{.StationName}}</h3>
+        <div class="ocean-temp-info">
+            <span class="temperature"><i class="cold fa-solid fa-temperature-high"></i>
+                {{if (call $.data.IsNA .Temperature)}}
+                <span class="temp-max">N/A</span>
+                {{else}}
+                {{.Temperature}}
+                {{end}}
+            </span>
+        </div>
+    </div>
+    <hr>
+</div>
+{{end}}
 
 
 {{ template "bottom" . }}

@@ -51,16 +51,15 @@ func getMax(features []models.Feature) float64 {
 func GetOcean(c *gin.Context) {
 	viewModel := oceanViewModel{
 		Date: time.Now().Add(-24 * time.Hour).Format("January 02"), // get observation for yesterday
+		IsNA: func(f float64) bool { return math.IsInf(f, 0) },
 	}
 
 	for stationId, stationName := range util.OCEAN_STATION_MAP {
 		obs := getOceanObservations(stationId)
-		fmt.Println(obs)
-
 		observation := observation{
-			stationId:   stationId,
-			stationName: stationName,
-			temperature: getMax(obs.Features),
+			StationId:   stationId,
+			StationName: stationName,
+			Temperature: getMax(obs.Features),
 		}
 		viewModel.Observations = append(viewModel.Observations, observation)
 	}
