@@ -1,6 +1,6 @@
 {{ template "top" . }}
 
-<header class="oceab-header">
+<header class="ocean-header">
     <div class="title">
         <h1>Ocean Temperature</h1>
         <h2 class="date">{{ .data.Date }}</h2>
@@ -12,12 +12,25 @@
 <div class="list-card">
     <div class="list-card-content primary-padding">
         <h3 class="bold year">{{.StationName}}</h3>
-        <div class="ocean-temp-info">
-            <span class="temperature"><i class="cold fa-solid fa-temperature-high"></i>
+        <div class="temp-info">
+            <span class="temperature">
+                <span class="label">Max 24h</span>
+                <br>
+                <i class="cold fa-solid fa-temperature-high"></i>
                 {{if (call $.data.IsNA .Temperature)}}
                 <span class="temp-max">N/A</span>
                 {{else}}
                 {{.Temperature}}
+                {{end}}
+            </span>
+            <span class="temperature">
+                <span class="label">Latest</span>
+                <br>
+                <i class="cold fa-solid fa-temperature-high"></i>
+                {{if (call $.data.IsNA .LatestTemperature)}}
+                <span class="temp-max">N/A</span>
+                {{else}}
+                {{.LatestTemperature}}
                 {{end}}
             </span>
         </div>

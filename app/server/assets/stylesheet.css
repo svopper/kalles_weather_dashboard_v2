@@ -104,6 +104,11 @@ header {
     font-size: 1.5rem;
 }
 
+.label {
+    font-size: 1.5rem;
+    font-weight: var(--font-weight-light);
+}
+
 :root {
     --color-primary: #3c6ee3;
     --color-primary-dark: #18326c;
