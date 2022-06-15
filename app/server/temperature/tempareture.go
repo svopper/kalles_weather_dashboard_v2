@@ -81,14 +81,23 @@ func getMinAndMax(features []models.Feature) (float64, float64) {
 }
 
 func GetIndex(c *gin.Context) {
+	requestedDate := c.Query("date")
+	var parsedDate time.Time
+
+	if tmpDate, err := time.Parse("2006-01-02", requestedDate); err == nil {
+		parsedDate = tmpDate
+	} else {
+		parsedDate = time.Now()
+	}
+
 	viewModel := indexViewModel{
-		Date:                    time.Now().Format("January 02"),
+		Date:                    parsedDate.Format("January 02"),
 		TemperatureObservations: []temperatureObservation{},
 	}
 	for i := 1; i <= 10; i++ {
-		year := time.Now().Year() - i
-		month := time.Now().Month()
-		day := time.Now().Day()
+		year := parsedDate.Year() - i
+		month := parsedDate.Month()
+		day := parsedDate.Day()
 		if !util.IsLeapYear(year) && month == time.February && day == 29 {
 			viewModel.TemperatureObservations = append(viewModel.TemperatureObservations, temperatureObservation{Year: year, Min: math.Inf(-1), Max: math.Inf(1)})
 			continue
