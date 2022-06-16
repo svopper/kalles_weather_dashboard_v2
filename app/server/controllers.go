@@ -23,6 +23,7 @@ func InstantiateControllers() *gin.Engine {
 
 	router.LoadHTMLGlob("app/server/templates/*")
 	router.Static("/assets", "app/server/assets")
+	router.Static("/.well-known/acme-challenge", "app/server/.well-known/acme-challenge")
 
 	router.GET("/", temperature.GetIndex)
 	router.GET("/ocean", ocean.GetOcean)
