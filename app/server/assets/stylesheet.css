@@ -109,19 +109,50 @@ header {
     font-weight: var(--font-weight-light);
 }
 
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: var(--color-primary-very-dark);
+    }
+
+    .list-view {
+        /* background-color: var(--color-primary-very-dark); */
+        color: var(--color-gray);
+    }
+
+    hr {
+        border-color: var(--color-very-dark-gray);
+    }
+}
+
 :root {
     --color-primary: #3c6ee3;
     --color-primary-dark: #18326c;
+    --color-primary-very-dark: #141c2b;
     --color-secondary: #c3d4f4;
     --color-tertiary: #e3eaf9;
     --color-warm: #d7615c;
     --color-white: #f9f9f9;
     --color-gray: #f0f0f0;
     --color-dark-gray: #d8d8d8;
+    --color-very-dark-gray: #2c2c2c;
 
     --padding-primary: 1.5rem;
 
     --font-weight-light: 300;
     --font-weight-demibold: 700;
     --font-weight-bold: 900;
+}
+
+input[type="date"] {
+    background: none;
+    border: none;
+    color: var(--color-white);
+}
+
+::-webkit-datetime-edit {
+    display: none;
+}
+
+::-webkit-calendar-picker-indicator {
+    color: #d7615c;
 }

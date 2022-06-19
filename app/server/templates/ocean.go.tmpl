@@ -8,36 +8,38 @@
     <p>This list gives an overview of the maxiumum ocean temperature from the last 24 hours from selected measuring stations around Denmark.</p>
 </header>
 
-{{range .data.Observations}}
-<div class="list-card">
-    <div class="list-card-content primary-padding">
-        <h3 class="bold year">{{.StationName}}</h3>
-        <div class="temp-info">
-            <span class="temperature">
-                <span class="label">Max 24h</span>
-                <br>
-                <i class="cold fa-solid fa-temperature-high"></i>
-                {{if (call $.data.IsNA .Temperature)}}
-                <span class="temp-max">N/A</span>
-                {{else}}
-                {{.Temperature}}
-                {{end}}
-            </span>
-            <span class="temperature">
-                <span class="label">Latest</span>
-                <br>
-                <i class="cold fa-solid fa-temperature-high"></i>
-                {{if (call $.data.IsNA .LatestTemperature)}}
-                <span class="temp-max">N/A</span>
-                {{else}}
-                {{.LatestTemperature}}
-                {{end}}
-            </span>
+<div class="list-view">
+    {{range .data.Observations}}
+    <div class="list-card">
+        <div class="list-card-content primary-padding">
+            <h3 class="bold year">{{.StationName}}</h3>
+            <div class="temp-info">
+                <span class="temperature">
+                    <span class="label">Max 24h</span>
+                    <br>
+                    <i class="cold fa-solid fa-temperature-high"></i>
+                    {{if (call $.data.IsNA .Temperature)}}
+                    <span class="temp-max">N/A</span>
+                    {{else}}
+                    {{.Temperature}}
+                    {{end}}
+                </span>
+                <span class="temperature">
+                    <span class="label">Latest</span>
+                    <br>
+                    <i class="cold fa-solid fa-temperature-high"></i>
+                    {{if (call $.data.IsNA .LatestTemperature)}}
+                    <span class="temp-max">N/A</span>
+                    {{else}}
+                    {{.LatestTemperature}}
+                    {{end}}
+                </span>
+            </div>
         </div>
+        <hr>
     </div>
-    <hr>
+    {{end}}
 </div>
-{{end}}
 
 
 {{ template "bottom" . }}

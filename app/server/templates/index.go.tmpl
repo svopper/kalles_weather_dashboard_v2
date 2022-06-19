@@ -5,7 +5,6 @@
         <h1>Weather</h1>
         <h2 class="date">{{ .data.Date }}</h2>
     </div>
-    
     <div class="list-card-content">
         <h3 class="bold year">Average</h3>
         <div class="temp-info">
@@ -18,29 +17,30 @@
         </div>
     </div>
 </header>
-{{range .data.TemperatureObservations}}
-<div class="list-card">
-    <div class="list-card-content primary-padding">
-        <h3 class="bold year">{{.Year}}</h3>
-        <div class="temp-info">
-            <span class="temperature"><i class="warm fa-brands fa-hotjar"></i>
-                {{if (call $.data.IsNA .Max)}}
-                <span class="temp-max">N/A</span>
-                {{else}}
-                {{.Max}}
-                {{end}}
-            </span>
-            <span class="temperature"><i class="cold fa-regular fa-snowflake"></i>
-                {{if (call $.data.IsNA .Min)}}
-                <span class="temp-max">N/A</span>
-                {{else}}
-                {{.Min}}
-                {{end}}
-            </span>
+<div class="list-view">
+    {{range .data.TemperatureObservations}}
+    <div class="list-card">
+        <div class="list-card-content primary-padding">
+            <h3 class="bold year">{{.Year}}</h3>
+            <div class="temp-info">
+                <span class="temperature"><i class="warm fa-brands fa-hotjar"></i>
+                    {{if (call $.data.IsNA .Max)}}
+                    <span class="temp-max">N/A</span>
+                    {{else}}
+                    {{.Max}}
+                    {{end}}
+                </span>
+                <span class="temperature"><i class="cold fa-regular fa-snowflake"></i>
+                    {{if (call $.data.IsNA .Min)}}
+                    <span class="temp-max">N/A</span>
+                    {{else}}
+                    {{.Min}}
+                    {{end}}
+                </span>
+            </div>
         </div>
+        <hr>
     </div>
-    <hr>
+    {{end}}
 </div>
-{{end}}
-
 {{ template "bottom" . }}
