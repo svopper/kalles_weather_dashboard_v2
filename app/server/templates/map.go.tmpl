@@ -1,0 +1,11 @@
+{{ template "top" . }}
+<div id="map-container">
+    <div id="map"></div>
+</div>
+<script src="scripts/map.js">
+</script>
+
+<script>
+    drawStations({{ .ocean_stations }});
+</script>
+{{ template "bottom" . }}

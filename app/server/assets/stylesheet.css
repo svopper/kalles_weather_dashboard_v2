@@ -52,6 +52,14 @@ header {
     color: var(--color-white);
 }
 
+#map-container {
+    height: 100vh;
+}
+
+#map {
+    height: 100%;
+}
+
 .error-header {
     background-color: var(--color-warm);
     color: var(--color-white);

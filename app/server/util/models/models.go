@@ -33,4 +33,5 @@ type Properties struct {
 	ParameterID string  `json:"parameterId"`
 	StationID   string  `json:"stationId"`
 	Value       float64 `json:"value"`
+	Name        string  `json:"name"`
 }

@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/svopper/kalles_weather_dashboard_v2/app/server/ocean"
+	"github.com/svopper/kalles_weather_dashboard_v2/app/server/station_map"
 	"github.com/svopper/kalles_weather_dashboard_v2/app/server/temperature"
 )
 
@@ -23,9 +24,11 @@ func InstantiateControllers() *gin.Engine {
 
 	router.LoadHTMLGlob("app/server/templates/*")
 	router.Static("/assets", "app/server/assets")
+	router.Static("/scripts", "app/server/scripts")
 
 	router.GET("/", temperature.GetIndex)
 	router.GET("/ocean", ocean.GetOcean)
+	router.GET("/map", station_map.GetMap)
 
 	return router
 }

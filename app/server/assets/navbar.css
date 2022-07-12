@@ -6,7 +6,6 @@
     padding: 0 var(--padding-primary) 0 var(--padding-primary);
     background-color: var(--color-primary-dark);
     color: #fff;
-
 }
 
 .nav-links a {
@@ -23,6 +22,7 @@
     display: flex;
     gap: 1em;
     font-size: 18px;
+    z-index: 99;
 }
 
 .menu li:hover {
